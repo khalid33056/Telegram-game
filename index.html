@@ -621,3 +621,217 @@
             <button class="spin-btn" id="modalCloseBtn">Continue Playing</button>
         </div>
     </div>
+    <script>
+        // Initialize Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        // Game data
+        const userData = {
+            food: 0,
+            tickets: 1,
+            team: null,
+            battlesWon: 0,
+            rank: 45,
+            username: tg.initDataUnsafe.user?.username || "Player",
+            userId: tg.initDataUnsafe.user?.id || "12345"
+        };
+
+        // Leaderboard data
+        const leaderboard = [
+            { name: "Alex", food: 12500 },
+            { name: "Sam", food: 9800 },
+            { name: "Rayan", food: 8450 },
+            { name: "Jordan", food: 7200 },
+            { name: "Taylor", food: 6800 },
+            { name: "Mohammad", food: 5400 },
+            { name: "Emma", food: 4900 },
+            { name: "Liam", food: 4300 },
+            { name: "Olivia", food: 3800 },
+            { name: "Noah", food: 3200 }
+        ];
+
+        // DOM elements
+        const teamCats = document.getElementById('teamCats');
+        const teamDogs = document.getElementById('teamDogs');
+        const totalFoodEl = document.getElementById('totalFood');
+        const battlesWonEl = document.getElementById('battlesWon');
+        const userTeamEl = document.getElementById('userTeam');
+        const userRankEl = document.getElementById('userRank');
+        const ticketCountEl = document.getElementById('ticketCount');
+        const spinCenter = document.getElementById('spinCenter');
+        const spinBtn = document.getElementById('spinBtn');
+        const spinWheel = document.getElementById('spinWheel');
+        const resultModal = document.getElementById('resultModal');
+        const resultPrizeEl = document.getElementById('resultPrize');
+        const closeModal = document.getElementById('closeModal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const leaderboardList = document.getElementById('leaderboardList');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const walletBtn = document.getElementById('walletBtn');
+
+        // Prizes
+        const prizes = [1000, 500, 300, 250, 100];
+
+        // Initialize game
+        function initGame() {
+            updateStats();
+            generateLeaderboard();
+            setupEventListeners();
+            setupTabs();
+        }
+
+        // Update user stats
+        function updateStats() {
+            totalFoodEl.textContent = userData.food;
+            battlesWonEl.textContent = userData.battlesWon;
+            userTeamEl.textContent = userData.team ? userData.team.toUpperCase() : '-';
+            userRankEl.textContent = `#${userData.rank}`;
+            ticketCountEl.textContent = userData.tickets;
+            
+            // Update team selection
+            if (userData.team === 'cats') {
+                teamCats.classList.add('active');
+                teamDogs.classList.remove('active');
+            } else if (userData.team === 'dogs') {
+                teamDogs.classList.add('active');
+                teamCats.classList.remove('active');
+            }
+        }
+
+        // Generate leaderboard
+        function generateLeaderboard() {
+            leaderboardList.innerHTML = '';
+            leaderboard.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                
+                // Add medal for top 3
+                let medal = '';
+                if (index === 0) medal = '🥇';
+                else if (index === 1) medal = '🥈';
+                else if (index === 2) medal = '🥉';
+                
+                item.innerHTML = `
+                    <div class="user-info">
+                        <div class="user-avatar">${player.name.charAt(0)}</div>
+                        <div>${medal} ${player.name}</div>
+                    </div>
+                    <div class="user-food">${player.food.toLocaleString()} $FOOD</div>
+                `;
+                leaderboardList.appendChild(item);
+            });
+        }
+
+        // Tab switching
+        function setupTabs() {
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked
+                    btn.classList.add('active');
+                    const tabName = btn.getAttribute('data-tab');
+                    document.getElementById(`${tabName}Content`).classList.add('active');
+                });
+            });
+        }
+
+        // Spin wheel functionality
+        function spinWheelAction() {
+            if (userData.tickets < 1) {
+                alert('Not enough tickets! Connect your wallet to get more.');
+                return;
+            }
+
+            // Disable spin during animation
+            spinBtn.disabled = true;
+            spinCenter.textContent = "SPINNING";
+            
+            // Add spinning animation
+            spinWheel.classList.add('spinning');
+            
+            // Simulate spin and get result
+            setTimeout(() => {
+                const prize = prizes[Math.floor(Math.random() * prizes.length)];
+                userData.food += prize;
+                userData.tickets -= 1;
+                
+                // Update UI
+                spinWheel.classList.remove('spinning');
+                spinBtn.disabled = false;
+                spinCenter.textContent = "SPIN";
+                updateStats();
+                
+                // Show result
+                resultPrizeEl.textContent = `${prize} $FOOD`;
+                resultModal.style.display = 'flex';
+            }, 4000);
+        }
+
+        // Team selection
+        function selectTeam(team) {
+            userData.team = team;
+            updateStats();
+            
+            // Show confirmation
+            const teamName = team.toUpperCase();
+            tg.showAlert(`Congratulations! You've joined Team ${teamName}!`);
+        }
+
+        // Setup wallet connection
+        function setupWalletConnection() {
+            tg.showPopup({
+                title: 'Connect Wallet',
+                message: 'Please connect your wallet to access all features',
+                buttons: [
+                    {id: 'connect', type: 'default', text: 'Connect'},
+                    {id: 'cancel', type: 'cancel'}
+                ]
+            }, (buttonId) => {
+                if (buttonId === 'connect') {
+                    tg.showAlert('Wallet connection coming soon!');
+                }
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Team selection
+            teamCats.addEventListener('click', () => selectTeam('cats'));
+            teamDogs.addEventListener('click', () => selectTeam('dogs'));
+            
+            // Spin wheel
+            spinCenter.addEventListener('click', spinWheelAction);
+            spinBtn.addEventListener('click', spinWheelAction);
+            
+            // Modal
+            closeModal.addEventListener('click', () => {
+                resultModal.style.display = 'none';
+            });
+            
+            modalCloseBtn.addEventListener('click', () => {
+                resultModal.style.display = 'none';
+            });
+            
+            // Wallet button
+            walletBtn.addEventListener('click', setupWalletConnection);
+            
+            // Social links (open in external browser)
+            document.querySelectorAll('.social-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    tg.openLink(link.href);
+                });
+            });
+        }
+
+        // Initialize game when page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
