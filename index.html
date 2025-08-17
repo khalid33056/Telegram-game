@@ -552,14 +552,14 @@
                 <div class="shop-item-price">$8.00</div>
                 <p class="shop-item-desc">Save $2 on two boosts</p>
                 <button class="shop-item-btn">Purchase</button>
-            </div>            <!-- Boost 3 -->
+            </div>                       <!-- Boost 3 -->
             <div class="shop-item">
                 <div class="popular-badge">MOST POPULAR</div>
                 <div class="boost-icon pulse">5x</div>
                 <h3 class="shop-item-title">Mega Boost</h3>
                 <div class="shop-item-price">$18.00</div>
                 <p class="shop-item-desc">Save $7 on five boosts</p>
-                <button class="shop-item-btn">Purchase</button>
+                <button class="shop-item-btn" onclick="purchaseBoost(5, 18)">Purchase</button>
             </div>
             
             <!-- Boost 4 -->
@@ -568,87 +568,96 @@
                 <h3 class="shop-item-title">Ultimate Boost</h3>
                 <div class="shop-item-price">$30.00</div>
                 <p class="shop-item-desc">Save $10 on eight boosts</p>
-                <button class="shop-item-btn">Purchase</button>
+                <button class="shop-item-btn" onclick="purchaseBoost(8, 30)">Purchase</button>
             </div>
         </div>
     </div>
     
     <!-- Bottom Navigation -->
     <div class="nav-bottom">
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchTab('home')">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchTab('shop')">
             <i class="fas fa-store"></i>
             <span>Shop</span>
         </div>
-        <div class="nav-item active">
+        <div class="nav-item active" onclick="switchTab('mining')">
             <i class="fas fa-hard-hat"></i>
             <span>Mining</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchTab('team')">
             <i class="fas fa-users"></i>
             <span>Team</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchTab('settings')">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
         </div>
     </div>
 
     <script>
-        // Mining functionality
-        let miningRate = 0.005; // Base mining rate
+        // Global Variables
+        let miningRate = 0.005;
         let activeBoosts = 0;
         let $wiseBalance = 162.24089;
-        let miningActive = true;
-        
-        // Update mining rate based on boosts
-        function updateMiningRate() {
-            return miningRate + (activeBoosts * 0.005);
-        }
-        
-        // Purchase boost function
-        function purchaseBoost(boostCount, price) {
-            // In a real app, this would process a payment
-            activeBoosts += boostCount;
-            
-            // Update UI
-            document.getElementById('miningRateValue').textContent = updateMiningRate().toFixed(5);
-            document.getElementById('activeBoosts').textContent = activeBoosts;
-            document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
-            
-            alert(`Successfully purchased ${boostCount} boost(s) for $${price}! Your mining rate has increased.`);
-        }
-        
-        // Simulate mining over time
-        function simulateMining() {
-            if (miningActive) {
-                $wiseBalance += updateMiningRate() / 3600; // Add per second
-                document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
-            }
-        }
-        
+        let teamMembers = 12;
+        let teamEarnings = 5.24560;
+        let currentTab = 'mining';
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Set initial values
-            document.getElementById('miningRateValue').textContent = updateMiningRate().toFixed(5);
-            document.getElementById('activeBoosts').textContent = activeBoosts;
-            document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
-            
-            // Simulate mining every second
+            updateUI();
             setInterval(simulateMining, 1000);
-            
-            // Add event listeners to boost buttons
-            document.querySelectorAll('.shop-item-btn').forEach((btn, index) => {
-                btn.addEventListener('click', function() {
-                    const prices = [5, 8, 18, 30];
-                    const boosts = [1, 2, 5, 8];
-                    purchaseBoost(boosts[index], prices[index]);
-                });
-            });
         });
+
+        // Update All UI Elements
+        function updateUI() {
+            document.getElementById('miningRateValue').textContent = (miningRate + (activeBoosts * 0.005)).toFixed(5);
+            document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
+            document.getElementById('teamMembers').textContent = teamMembers;
+            document.getElementById('teamEarnings').textContent = teamEarnings.toFixed(5);
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            // Add content switching logic here
+        }
+
+        // Button Functions
+        function showWallet() {
+            alert("🚧 Wallet integration coming soon!");
+        }
+
+        function showProfile() {
+            alert(`👤 User Profile\n\nBalance: ${$wiseBalance.toFixed(2)} $wise\nTeam: ${teamMembers} members`);
+        }
+
+        function purchaseBoost(boostCount, price) {
+            activeBoosts += boostCount;
+            updateUI();
+            alert(`✅ Purchased ${boostCount} boosts for $${price}!\n\nNew mining rate: ${(miningRate + (activeBoosts * 0.005)).toFixed(5)} $wise/hour`);
+        }
+
+        function inviteFriends() {
+            teamMembers++;
+            teamEarnings += 0.5;
+            updateUI();
+            alert(`📢 Invite sent!\nYou earn 5% from friends' mining.`);
+        }
+
+        // Mining Simulation
+        function simulateMining() {
+            $wiseBalance += (miningRate + (activeBoosts * 0.005)) / 3600;
+            document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
+        }
     </script>
 </body>
 </html>
+            
