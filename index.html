@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$wise Mining - Premium Cloud Mining</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>$WISE Game</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff7e5f;
+            --dark: #1a1a2e;
+            --light: #f0f2f5;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,43 +21,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        :root {
-            --primary: #0d0f1e;
-            --secondary: #12152c;
-            --accent: #ffd700;
-            --accent-dark: #d4af37;
-            --text: #ffffff;
-            --text-secondary: #b8b8b8;
-            --success: #00c853;
-            --warning: #ffab00;
-            --danger: #ff1744;
-            --card-bg: #1a1d3c;
-            --card-border: rgba(212, 175, 55, 0.3);
-        }
-        
         body {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--text);
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            color: white;
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0) 20%);
-            z-index: -1;
+            padding-bottom: 60px;
         }
         
         .container {
             max-width: 480px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
         
         /* Header Styles */
@@ -58,359 +40,165 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid var(--card-border);
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--accent), #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        .league {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: bold;
         }
         
-        .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(to right, var(--accent), var(--text));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .user-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .btn {
-            padding: 8px 15px;
-            border-radius: 30px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: var(--primary);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-        
-        /* Main Content */
-        .mining-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .mining-card::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-            z-index: 0;
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            z-index: 1;
-            position: relative;
-        }
-        
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--accent);
-        }
-        
-        .mining-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-            z-index: 1;
-            position: relative;
-        }
-        
-        .stat-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--card-border);
-        }
-        
-        .stat-value {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 5px 0;
-            color: var(--accent);
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        
-        .progress-container {
-            margin: 25px 0;
-            z-index: 1;
-            position: relative;
-        }
-        
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        
-        .progress-bar {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, var(--accent), var(--accent-dark));
-            border-radius: 5px;
-            width: 45%;
-            position: relative;
-        }
-        
-        .progress-fill::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shine 2s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        .mining-controls {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .control-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--card-border);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        .control-btn.active {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: var(--primary);
-        }
-        
-        .control-btn i {
-            font-size: 20px;
-        }
-        
-        /* Shop Section */
-        .section-title {
-            font-size: 20px;
-            margin: 25px 0 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .section-title i {
-            color: var(--accent);
-        }
-        
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .shop-item {
-            background: var(--card-bg);
+        /* Balance Section */
+        .balance-card {
+            background: rgba(255,255,255,0.05);
             border-radius: 15px;
             padding: 20px;
-            border: 1px solid var(--card-border);
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
         
-        .shop-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .popular-badge {
-            position: absolute;
-            top: -8px;
-            right: 15px;
-            background: var(--warning);
-            color: var(--primary);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .boost-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .shop-item-title {
+        .balance-title {
             font-size: 16px;
+            opacity: 0.7;
             margin-bottom: 5px;
-            font-weight: 600;
         }
         
-        .shop-item-price {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        
-        .shop-item-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-        
-        .shop-item-btn {
-            width: 100%;
-            padding: 8px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: var(--primary);
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .shop-item-btn:disabled {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            cursor: not-allowed;
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(to right, #12c2e9, #c471ed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         /* Navigation */
-        .nav-bottom {
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .nav-item.active {
+            opacity: 1;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        /* Sections */
+        .section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .game-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .game-title {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        /* Footer */
+        .footer {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--card-bg);
-            border-top: 1px solid var(--card-border);
+            background: var(--dark);
             display: flex;
             justify-content: space-around;
             padding: 15px 0;
-            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
+        .footer-item {
+            text-align: center;
             font-size: 12px;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
+            opacity: 0.7;
         }
         
-        .nav-item.active {
+        .footer-item.active {
+            opacity: 1;
             color: var(--accent);
-        }
-        
-        .nav-item i {
-            font-size: 20px;
-        }
-        
-        /* Animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .mining-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .shop-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -418,246 +206,121 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="logo">
-                <div class="logo-icon">$</div>
-                <div class="logo-text">$wise Mining</div>
-            </div>
-            <div class="user-actions">
-                <button class="btn btn-outline">
-                    <i class="fas fa-wallet"></i> Wallet
-                </button>
-                <button class="btn btn-primary">
-                    <i class="fas fa-user"></i> Profile
-                </button>
-            </div>
+            <div class="logo">$WISE</div>
+            <div class="league">DIAMOND LEAGUE</div>
         </div>
         
-        <!-- Mining Card -->
-        <div class="mining-card">
-            <div class="card-header">
-                <div class="card-title">Mining Dashboard</div>
-                <div class="card-status">
-                    <i class="fas fa-circle" style="color: var(--success);"></i> Active
-                </div>
+        <!-- Balance -->
+        <div class="balance-card">
+            <div class="balance-title">YOUR BALANCE</div>
+            <div class="balance-amount">1.8 $TON</div>
+            <button class="btn">Withdraw TON</button>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <div class="nav-item">Rewards</div>
+            <div class="nav-item">Tasks</div>
+            <div class="nav-item active">Roulette</div>
+            <div class="nav-item">Profile</div>
+        </div>
+        
+        <!-- Roulette Section -->
+        <div class="section">
+            <div class="section-title">
+                <span>Roulette</span>
+                <span>Spins left: 0</span>
             </div>
-            
-            <div class="mining-stats">
-                <div class="stat-card">
-                    <div class="stat-label">Total $wise</div>
-                    <div class="stat-value">162.24089</div>
-                    <div class="stat-label">200% boosted</div>
+            <button class="btn">Buy spins</button>
+        </div>
+        
+        <!-- Stats -->
+        <div class="section">
+            <div class="stats">
+                <div>
+                    <div class="stat-value">768,248</div>
+                    <div class="stat-label">$WISE</div>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-label">Earned $wise</div>
-                    <div class="stat-value">8.56240</div>
-                    <div class="stat-label">Today</div>
+                <div>
+                    <div class="stat-value">+16.5k</div>
+                    <div class="stat-label">REWARDS</div>
                 </div>
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-header">
-                    <div>Mining Progress</div>
-                    <div>45%</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-            
-            <div class="mining-stats">
-                <div class="stat-card">
-                    <div class="stat-label">Mining Rate</div>
-                    <div class="stat-value">0.09953/h</div>
-                    <div class="stat-label">With Boost</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-label">Mining Time</div>
-                    <div class="stat-value">23:49:31</div>
-                    <div class="stat-label">Remaining</div>
-                </div>
-            </div>
-            
-            <div class="mining-controls">
-                <div class="control-btn">
-                    <i class="fas fa-gift"></i>
-                    <span>Airdrops</span>
-                </div>
-                <div class="control-btn active">
-                    <i class="fas fa-hard-hat"></i>
-                    <span>Mining</span>
-                </div>
-                <div class="control-btn">
-                    <i class="fas fa-gamepad"></i>
-                    <span>Gaming</span>
-                </div>
-                <div class="control-btn">
-                    <i class="fas fa-tasks"></i>
-                    <span>Tasks</span>
+                <div>
+                    <div class="stat-value">+103</div>
+                    <div class="stat-label">INVITES</div>
                 </div>
             </div>
         </div>
         
-        <!-- Team Section -->
-        <div class="mining-card">
-            <div class="card-header">
-                <div class="card-title">Team & Earnings</div>
+        <!-- Games -->
+        <div class="section">
+            <div class="section-title">
+                <span>Daily Games</span>
             </div>
-            
-            <div class="mining-stats">
-                <div class="stat-card">
-                    <div class="stat-label">Active Members</div>
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">In your team</div>
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-title">Squeaky Combo</div>
+                    <button class="btn">Play ►</button>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-label">Team Earnings</div>
-                    <div class="stat-value">5.24560</div>
-                    <div class="stat-label">Total $wise</div>
+                <div class="game-card">
+                    <div class="game-title">Catch the Cheese</div>
+                    <button class="btn">Play ►</button>
                 </div>
             </div>
-            
-            <div class="progress-container">
-                <div class="progress-header">
-                    <div>Team Bonus: 5% of each member's mining</div>
-                </div>
-            </div>
-            
-            <button class="btn btn-primary" style="width: 100%; margin-top: 15px;">
-                <i class="fas fa-user-plus"></i> Invite Friends & Earn
-            </button>
         </div>
         
-        <!-- Shop Section -->
-        <h2 class="section-title">
-            <i class="fas fa-shopping-cart"></i> Boost Shop
-        </h2>
-        
-        <div class="shop-grid">
-            <!-- Boost 1 -->
-            <div class="shop-item">
-                <div class="boost-icon">1x</div>
-                <h3 class="shop-item-title">Basic Boost</h3>
-                <div class="shop-item-price">$5.00</div>
-                <p class="shop-item-desc">+100% mining for 3 days</p>
-                <button class="shop-item-btn">Purchase</button>
+        <!-- Presale -->
+        <div class="section">
+            <div class="section-title">
+                <span>Presale now!</span>
             </div>
-            
-            <!-- Boost 2 -->
-            <div class="shop-item">
-                <div class="boost-icon">2x</div>
-                <h3 class="shop-item-title">Double Boost</h3>
-                <div class="shop-item-price">$8.00</div>
-                <p class="shop-item-desc">Save $2 on two boosts</p>
-                <button class="shop-item-btn">Purchase</button>
-            </div>                       <!-- Boost 3 -->
-            <div class="shop-item">
-                <div class="popular-badge">MOST POPULAR</div>
-                <div class="boost-icon pulse">5x</div>
-                <h3 class="shop-item-title">Mega Boost</h3>
-                <div class="shop-item-price">$18.00</div>
-                <p class="shop-item-desc">Save $7 on five boosts</p>
-                <button class="shop-item-btn" onclick="purchaseBoost(5, 18)">Purchase</button>
-            </div>
-            
-            <!-- Boost 4 -->
-            <div class="shop-item">
-                <div class="boost-icon">8x</div>
-                <h3 class="shop-item-title">Ultimate Boost</h3>
-                <div class="shop-item-price">$30.00</div>
-                <p class="shop-item-desc">Save $10 on eight boosts</p>
-                <button class="shop-item-btn" onclick="purchaseBoost(8, 30)">Purchase</button>
-            </div>
+            <button class="btn">Buy tokens</button>
         </div>
     </div>
     
-    <!-- Bottom Navigation -->
-    <div class="nav-bottom">
-        <div class="nav-item" onclick="switchTab('home')">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('shop')">
-            <i class="fas fa-store"></i>
-            <span>Shop</span>
-        </div>
-        <div class="nav-item active" onclick="switchTab('mining')">
-            <i class="fas fa-hard-hat"></i>
-            <span>Mining</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('team')">
-            <i class="fas fa-users"></i>
-            <span>Team</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('settings')">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </div>
+    <!-- Footer Navigation -->
+    <div class="footer">
+        <div class="footer-item">Home</div>
+        <div class="footer-item">Tasks</div>
+        <div class="footer-item active">Roulette</div>
+        <div class="footer-item">Profile</div>
+        <div class="footer-item">Games</div>
     </div>
 
     <script>
-        // Global Variables
-        let miningRate = 0.005;
-        let activeBoosts = 0;
-        let $wiseBalance = 162.24089;
-        let teamMembers = 12;
-        let teamEarnings = 5.24560;
-        let currentTab = 'mining';
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            updateUI();
-            setInterval(simulateMining, 1000);
-        });
-
-        // Update All UI Elements
-        function updateUI() {
-            document.getElementById('miningRateValue').textContent = (miningRate + (activeBoosts * 0.005)).toFixed(5);
-            document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
-            document.getElementById('teamMembers').textContent = teamMembers;
-            document.getElementById('teamEarnings').textContent = teamEarnings.toFixed(5);
-        }
-
-        // Tab Switching
-        function switchTab(tabName) {
-            currentTab = tabName;
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+        // Initialize Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        // Handle button clicks
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.textContent;
+                
+                if(buttonText.includes('Play')) {
+                    tg.showPopup({
+                        title: 'Game Starting',
+                        message: 'Get ready to play!',
+                        buttons: [{ type: 'ok' }]
+                    });
+                }
+                else if(buttonText.includes('Buy')) {
+                    tg.showPopup({
+                        title: 'Purchase',
+                        message: 'Confirm your purchase',
+                        buttons: [{ type: 'ok' }, { type: 'cancel' }]
+                    });
+                }
             });
-            event.currentTarget.classList.add('active');
-            // Add content switching logic here
-        }
-
-        // Button Functions
-        function showWallet() {
-            alert("🚧 Wallet integration coming soon!");
-        }
-
-        function showProfile() {
-            alert(`👤 User Profile\n\nBalance: ${$wiseBalance.toFixed(2)} $wise\nTeam: ${teamMembers} members`);
-        }
-
-        function purchaseBoost(boostCount, price) {
-            activeBoosts += boostCount;
-            updateUI();
-            alert(`✅ Purchased ${boostCount} boosts for $${price}!\n\nNew mining rate: ${(miningRate + (activeBoosts * 0.005)).toFixed(5)} $wise/hour`);
-        }
-
-        function inviteFriends() {
-            teamMembers++;
-            teamEarnings += 0.5;
-            updateUI();
-            alert(`📢 Invite sent!\nYou earn 5% from friends' mining.`);
-        }
-
-        // Mining Simulation
-        function simulateMining() {
-            $wiseBalance += (miningRate + (activeBoosts * 0.005)) / 3600;
-            document.getElementById('$wiseBalance').textContent = $wiseBalance.toFixed(5);
-        }
+        });
+        
+        // Simulate dynamic data updates
+        setInterval(() => {
+            const wiseAmount = document.querySelector('.stat-value');
+            const currentAmount = parseInt(wiseAmount.textContent.replace(/,/g, ''));
+            wiseAmount.textContent = (currentAmount + Math.floor(Math.random() * 1000)).toLocaleString();
+        }, 5000);
     </script>
 </body>
 </html>
-            
