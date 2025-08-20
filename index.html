@@ -1,1241 +1,140 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$WISE - Professional Telegram Game</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-        
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #a29bfe;
-            --accent: #fd79a8;
-            --dark: #1e1e2e;
-            --darker: #161622;
-            --light: #f7f7fc;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #ff7675;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --page-bg: linear-gradient(135deg, var(--darker), var(--dark));
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-        }
-        
-        body {
-            background: var(--page-bg);
-            color: var(--light);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 30%, rgba(108, 92, 231, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(253, 121, 168, 0.1) 0%, transparent 40%);
-            z-index: -1;
-        }
-        
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 15px;
-            padding-bottom: 80px;
-        }
-        
-        /* Header Styles */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            margin-bottom: 10px
-
-            }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--accent), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .logo i {
-            font-size: 32px;
-        }
-        
-        .user-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .icon-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--light);
-            font-size: 18px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        /* Page Content */
-        .page {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        .page.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* League Badge */
-        .league-badge {
-            background: linear-gradient(45deg, #11998e, #38ef7d);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Balance Card */
-        .balance-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        
-        .balance-title {
-            font-size: 16px;
-            opacity: 0.8;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .balance-amount {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #12c2e9, #c471ed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .btn {
-            flex: 1;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(108, 92, 231,
-                                        0.3);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(108, 92, 231, 0.4);
-        }
-        
-        .btn-secondary {
-            background: var(--card-bg);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Stats Section */
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-        
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 20px;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            transition: var(--transition);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.7;
-        }
-        
-        /* Games Section */
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 30px 0 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-        
-        .game-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px 20px;
-            text-align: center;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        .game-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-            color: var(--accent);
-        }
-        
-        .game-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        
-        .game-reward {
-            background: rgba(0, 184, 148, 0.15);
-            color: var(--success);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        
-        /* Roulette Section */
-        .roulette-section {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px;
-            margin: 25px 0;
-            text-align: center;
-        }
-        
-        .roulette-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .spins-left {
-            background: rgba(253, 203, 110, 0.15);
-            color: var(--warning);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .roulette-wheel {
-            width: 260px;
-            height: 260px;
-            margin: 0 auto 25px;
-            position: relative;
-            border-radius: 50%;
-            background: conic-gradient(
-                #ff7675, #fd79a8, #a29bfe, #6c5ce7,
-                #ff7675, #fd79a8, #a29bfe, #6c5ce7
-                     );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: rotate 30s linear infinite;
-        }
-        
-        @keyframes rotate {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        
-        .wheel-center {
-            width: 80px;
-            height: 80px;
-            background: var(--darker);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 24px;
-            font-weight: 700;
-            z-index: 2;
-        }
-        
-        /* Presale Section */
-        .presale-card {
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            border-radius: 20px;
-            padding: 25px;
-            margin: 30px 0;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(37, 117, 252, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .presale-card::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            transform: rotate(30deg);
-        }
-        
-        .presale-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            position: relative;
-        }
-        
-        .presale-subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: 25px;
-            position: relative;
-        }
-        
-        /* Tasks Section */
-        .task-item {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: var(--transition);
-        }
-        
-        .task-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .task-icon {
-            font-size: 24px;
-            width: 50px;
-            height: 50px;
-            background: rgba(108, 92, 231, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .task-info {
-            flex: 1;
-        }
-        
-        .task-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            }
-        
-        .task-description {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-bottom: 10px;
-        }
-        
-        .task-progress {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 3px;
-        }
-        
-        .task-reward {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--success);
-        }
-        
-        /* Profile Section */
-        .profile-header {
-            text-align: center;
-            padding: 30px 0;
-        }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: white;
-        }
-        
-        .profile-name {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .profile-id {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-bottom: 20px;
-        }
-        
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .profile-stat {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .profile-stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .profile-stat-label {
-            font-size: 14px;
-            opacity: 0.7;
-        }
-        
-        /* Leaderboard Section */
-        .leaderboard-item {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 15px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .leaderboard-rank {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(108, 92, 231, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        
-        .rank-1 {
-            background: linear-gradient(135deg, #f6d365, #fda085);
-            color: var(--dark);
-        }
-        
-        .rank-2 {
-            background: linear-gradient(135deg, #d7d2cc, #304352);
-        }
-        
-        .rank-3 {
-            background: linear-gradient(135deg, #834d9b, #d04ed6);
-        }
-        
-        .leaderboard-info {
-            flex: 1;
-        }
-        
-        .leaderboard-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .leaderboard-score {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-            color: var(--success);
-        }
-        
-        /* Footer Navigation */
-        .footer-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--darker);
-            display: flex;
-            justify-content: space-around;
-            padding: 18px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-                 }
-        
-        .nav-item {
-            text-align: center;
-            font-size: 12px;
-            opacity: 0.6;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
-        
-        .nav-item i {
-            font-size: 20px;
-        }
-        
-        .nav-item.active {
-            opacity: 1;
-            color: var(--accent);
-            transform: translateY(-5px);
-        }
-        
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        /* Responsive Adjustments */
-        @media (max-width: 480px) {
-            .balance-amount {
-                font-size: 32px;
-            }
-            
-            .stat-card {
-                padding: 15px;
-            }
-            
-            .stat-value {
-                font-size: 20px;
-            }
-            
-            .roulette-wheel {
-                width: 220px;
-                height: 220px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>Risk Disclaimer – Elite Trading</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Risk disclaimer for Elite Trading Channel by Khalid Khan. Educational content only." />
+  <meta property="og:title" content="Risk Disclaimer – Please Read Before You Trade" />
+  <meta property="og:description" content="Trading involves substantial risk. Educational content only." />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Elite Trading" />
+  <style>
+    :root{
+      --bg:#07101a; --card:#0f1720; --muted:#9fb0c3; --text:#e6eef7; --accent:#7cc3ff; --border:#17303f;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,var(--bg) 0%, #08121a 100%); color:var(--text);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{max-width:880px; margin:28px auto; padding:20px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--border); border-radius:18px; padding:28px; box-shadow:0 10px 30px rgba(2,6,10,0.6);
+      backdrop-filter: blur(6px);
+    }
+    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+    .badge{font-size:12px; color:var(--muted); background:rgba(124,195,255,0.04); padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.02)}
+    h1{margin:8px 0 6px; font-size:clamp(22px,3.2vw,34px); line-height:1.05}
+    .meta{color:var(--muted); font-size:13px}
+    .content p{line-height:1.68; margin:12px 0}
+    h2{margin:20px 0 8px; font-size:clamp(18px,2.6vw,22px)}
+    ul{margin:8px 0 12px 20px}
+    a{color:var(--accent); text-decoration:none}
+    .brand{display:flex; gap:12px; align-items:center; margin-top:18px}
+    .logo{width:44px; height:44px; border-radius:10px; background:linear-gradient(135deg,#7cc3ff,#3d6b96); border:1px solid rgba(255,255,255,0.03)}
+    .footer{border-top:1px dashed rgba(255,255,255,0.03); margin-top:20px; padding-top:14px; color:var(--muted); font-size:13px}
+    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.03);
+      background:transparent; color:var(--text); text-decoration:none; font-weight:600; font-size:14px;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn svg{width:18px; height:18px; opacity:0.95}
+    @media (max-width:520px){
+      .wrap{padding:12px}
+      .card{padding:18px}
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-coins"></i>
-                $WISE
-            </div>
-            <div class="user-actions">
-                <div class="icon-btn">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <div class="icon-btn">
-                    <i class="fas fa-cog"></i>
-                </div>
-            </div>
+  <main class="wrap">
+    <article class="card" itemscope itemtype="https://schema.org/Article">
+      <header class="top">
+        <div>
+          <div class="badge">Risk Notice</div>
+          <h1 itemprop="headline">Risk Disclaimer – Please Read Before You Trade</h1>
+          <div class="meta">
+            <time datetime="2025-08-20" itemprop="datePublished">August 20, 2025</time> · by <span itemprop="author">Sigma_0x</span>
+          </div>
         </div>
-        
-        <!-- Home Page -->
-        <div id="home-page" class="page active">
-            <!-- League Badge -->
-            <div class="league-badge">
-                <i class="fas fa-crown"></i>
-                DIAMOND LEAGUE
-            </div>
-            
-            <!-- Balance Card -->
-            <div class="balance-card">
-                <div class="balance-title">
-                    <i class="fas fa-wallet"></i>
-                    YOUR BALANCE
-                </div>
-                <div class="balance-amount">1.8 $TON</div>
-                <div class="action-buttons">
-                    <button class="btn">
-                        <i class="fas fa-download"></i>
-                        Withdraw
-                    </button>
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-exchange-alt"></i>
-                        Swap
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Stats Section -->
-            <div class="stats-section">
-                <div class="stat-card">
-                    <div class="stat-value">768,248</div>
-                    <div class="stat-label">$WISE</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">+16.5k</div>
-                    <div class="stat-label">REWARDS</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">+103</div>
-                    <div class="stat-label">INVITES</div>
-                </div>
-            </div>
 
-            <!-- Roulette Section -->
-            <div class="roulette-section">
-                <div class="roulette-header">
-                    <h2>Roulette</h2>
-                    <div class="spins-left">
-                        <i class="fas fa-sync-alt"></i>
-                        Spins left: 0
-                    </div>
-                </div>
-                
-                <div class="roulette-wheel">
-                    <div class="wheel-center">SPIN</div>
-                </div>
-                
-                <button class="btn pulse">
-                    <i class="fas fa-shopping-cart"></i>
-                    Buy Spins
-                </button>
-            </div>
-            
-            <!-- Games Section -->
-            <h2 class="section-title">
-                <i class="fas fa-gamepad"></i>
-                Daily Games
-            </h2>
-            
-            <div class="games-grid">
-                <div class="game-card">
-                    <div class="game-icon">
-                        <i class="fas fa-dice"></i>
-                    </div>
-                    <h3 class="game-title">Squeaky Combo</h3>
-                    <div class="game-reward">+20,000 $WISE</div>
-                    <button class="btn">
-                        <i class="fas fa-play"></i>
-                        Play
-                    </button>
-                </div>
-                
-                <div class="game-card">
-                    <div class="game-icon">
-                        <i class="fas fa-chess"></i>
-                    </div>
-                    <h3 class="game-title">Catch the Cheese</h3>
-                    <div class="game-reward">+20,000 $WISE</div>
-                    <button class="btn">
-                        <i class="fas fa-play"></i>
-                        Play
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Presale Section -->
-            <div class="presale-card">
-                <h2 class="presale-title">Presale Now Live!</h2>
-                <p class="presale-subtitle">Get $WISE tokens at the lowest price</p>
-                <button class="btn">
-                    <i class="fas fa-gem"></i>
-                    Buy Tokens Now
-                </button>
-            </div>
+        <div style="text-align:right">
+          <div style="font-size:12px; color:var(--muted)">Follow</div>
+          <div style="margin-top:6px">
+            <a href="https://t.me/elitetrading1000" target="_blank" rel="noopener" class="btn" style="padding:8px 10px">
+              <!-- telegram icon -->
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 3L3 10.5l4.5 1.5L18 8l-6 8 1.5 4.5L21 3z" fill="currentColor"/></svg>
+              @elitetrading1000
+            </a>
+          </div>
         </div>
-        
-        <!-- Tasks Page -->
-        <div id="tasks-page" class="page">
-            <h2 class="section-title">
-                <i class="fas fa-tasks"></i>
-                Daily Tasks
-            </h2>
-            
-            <div class="task-item">
-                <div class="task-icon">
-                    <i class="fas fa-share-alt"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Invite Friends</h3>
-                    <p class="task-description">Invite 3 friends to join $WISE</p>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 33%"></div>
-                    </div>
-                    <div class="task-reward">
-                        <i class="fas fa-gift"></i>
-                        Reward: 5,000 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon">
-                    <i class="fas fa-gamepad"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Play Daily Game</h3>
-                    <p class="task-description">Play any game 3 times today</p>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 66%"></div>
-                           </div>
-                    <div class="task-reward">
-                        <i class="fas fa-gift"></i>
-                        Reward: 3,000 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon">
-                    <i class="fas fa-dice"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Spin the Wheel</h3>
-                    <p class="task-description">Spin the roulette wheel 5 times</p>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 20%"></div>
-                    </div>
-                    <div class="task-reward">
-                        <i class="fas fa-gift"></i>
-                        Reward: 7,500 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon">
-                    <i class="fas fa-wallet"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Make a Deposit</h3>
-                    <p class="task-description">Deposit at least 5 TON</p>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 0%"></div>
-                    </div>
-                    <div class="task-reward">
-                        <i class="fas fa-gift"></i>
-                        Reward: 10,000 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Reach Diamond League</h3>
-                    <p class="task-description">Earn 100,000 $WISE points</p>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: 76%"></div>
-                    </div>
-                    <div class="task-reward">
-                        <i class="fas fa-gift"></i>
-                        Reward: 25,000 $WISE
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Roulette Page -->
-        <div id="roulette-page" class="page">
-            <div class="roulette-section">
-                <div class="roulette-header">
-                    <h2>Lucky Roulette</h2>
-                    <div class="spins-left">
-                        <i class="fas fa-sync-alt"></i>
-                        Spins left: 3
-                    </div>
-                </div>
-                
-                <div class="roulette-wheel">
-                    <div class="wheel-center">SPIN</div>
-                </div>
-                
-                <button class="btn pulse" style="margin-bottom: 20px;">
-                    <i class="fas fa-play-circle"></i>
-                    Spin Now
-                </button>
-                
-                <div class="section-title">
-                    <i class="fas fa-gift"></i>
-                    Today's Prizes
-                </div>
-                
-                <div class="stats-section">
-                    <div class="stat-card">
-                        <div class="stat-value">500 $WISE</div>
-                        <div class="stat-label">Common</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">1,500 $WISE</div>
-                        <div class="stat-label">Rare</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">5,000 $WISE</div>
-                        <div class="stat-label">Epic</div>
-                    </div>
-                </div>
-                
-                <div class="presale-card" style="margin-top: 20px;">
-                    <h2 class="presale-title">Need More Spins?</h2>
-                    <p class="presale-subtitle">Get additional spins with $WISE tokens</p>
-                    <button class="btn">
-                        <i class="fas fa-shopping-cart"></i>
-                        Buy Spins
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Profile Page -->
-        <div id="profile-page" class="page">
-            <div class="profile-header">
-                <div class="profile-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <h2 class="profile-name">Khalid3330</h2>
-                <div class="profile-id">UQB3W_rwt...</div>
-                
-                <div class="league-badge">
-                    <i class="fas fa-crown"></i>
-                    DIAMOND LEAGUE
-                </div>
-            </div>
-                 <div class="profile-stats">
-                <div class="profile-stat">
-                    <div class="profile-stat-value">1.8</div>
-                    <div class="profile-stat-label">$TON</div>
-                </div>
-                <div class="profile-stat">
-                    <div class="profile-stat-value">768K</div>
-                    <div class="profile-stat-label">$WISE</div>
-                </div>
-                <div class="profile-stat">
-                    <div class="profile-stat-value">103</div>
-                    <div class="profile-stat-label">Friends</div>
-                </div>
-            </div>
-            
-            <div class="balance-card">
-                <div class="balance-title">
-                    <i class="fas fa-trophy"></i>
-                    ACHIEVEMENTS
-                </div>
-                
-                <div class="stats-section">
-                    <div class="stat-card">
-                        <div class="stat-value">12</div>
-                        <div class="stat-label">Completed</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">5</div>
-                        <div class="stat-label">In Progress</div>
-                    </div>
-                </div>
-                
-                <button class="btn" style="margin-top: 15px;">
-                    <i class="fas fa-medal"></i>
-                    View All Achievements
-                </button>
-            </div>
-            
-            <div class="section-title">
-                <i class="fas fa-history"></i>
-                Recent Activity
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon" style="background: rgba(0, 184, 148, 0.2);">
-                    <i class="fas fa-coins" style="color: var(--success);"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Received Rewards</h3>
-                    <p class="task-description">+5,000 $WISE from daily login</p>
-                    <div class="task-reward">2 hours ago</div>
-                </div>
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon" style="background: rgba(108, 92, 231, 0.2);">
-                    <i class="fas fa-gamepad" style="color: var(--primary);"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Game Completed</h3>
-                    <p class="task-description">Finished "Catch the Cheese"</p>
-                    <div class="task-reward">5 hours ago</div>
-                </div>
-            </div>
-            
-            <div class="task-item">
-                <div class="task-icon" style="background: rgba(253, 203, 110, 0.2);">
-                    <i class="fas fa-user-plus" style="color: var(--warning);"></i>
-                </div>
-                <div class="task-info">
-                    <h3 class="task-title">Friend Invited</h3>
-                    <p class="task-description">You invited @user123</p>
-                    <div class="task-reward">Yesterday</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Leaderboard Page -->
-        <div id="leaderboard-page" class="page">
-            <h2 class="section-title">
-                <i class="fas fa-trophy"></i>
-                Top Players
-            </h2>
-            
-            <div class="league-badge" style="margin-bottom: 25px;">
-                <i class="fas fa-crown"></i>
-                DIAMOND LEAGUE
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank rank-1">1</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">ProPlayer99</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        1,245,890 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank rank-2">2</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">CryptoMaster</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        1,128,450 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank rank-3">3</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">Sami</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        987,650 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank">4</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">Khalid3330</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        768,248 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank">5</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">Shohil</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        654,320 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank">6</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">MouseHunter</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        543,210 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank">7</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">CheeseFinder</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        432,100 $WISE
-                    </div>
-                </div>
-            </div>
-            
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank">8</div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">WiseBeginner</div>
-                    <div class="leaderboard-score">
-                        <i class="fas fa-coins"></i>
-                        321,098 $WISE
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Footer Navigation -->
-    <div class="footer-nav">
-        <div class="nav-item active" data-page="home-page">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </div>
-        <div class="nav-item" data-page="tasks-page">
-            <i class="fas fa-tasks"></i>
-            <span>Tasks</span>
-        </div>
-        <div class="nav-item" data-page="roulette-page">
-            <i class="fas fa-dice"></i>
-            <span>Roulette</span>
-        </div>
-        <div class="nav-item" data-page="profile-page">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </div>
-        <div class="nav-item" data-page="leaderboard-page">
-            <i class="fas fa-trophy"></i>
-            <span>Leaderboard</span>
-        </div>
-    </div>
+      </header>
 
-    <script>
-        // Initialize Telegram Web App
-        const tg = window.Telegram.WebApp;
-        
-        // Expand the app to full screen
-        tg.expand();
-        
-        // Enable the confirmation dialog when the user tries to close the Web App
-        tg.enableClosingConfirmation();
-        
-        // Handle theme change
-        tg.onEvent('themeChanged', () => {
-            if (tg.colorScheme === 'dark') {
-                document.documentElement.style.setProperty('--light', '#f7f7fc');
-                document.documentElement.style.setProperty('--dark', '#1e1e2e');
-                document.documentElement.style.setProperty('--darker', '#161622');
-            } else {
-                document.documentElement.style.setProperty('--light', '#1e1e2e');
-                document.documentElement.style.setProperty('--dark', '#f7f7fc');
-                document.documentElement.style.setProperty('--darker', '#e6e6fa');
-            }
-        });
-             // Set up button actions
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const buttonText = this.textContent.trim();
-                
-                // Show appropriate popup based on button clicked
-                if (buttonText.includes('Play')) {
-                    tg.showPopup({
-                        title: 'Game Starting',
-                        message: 'Get ready to play! Loading your game...',
-                        buttons: [{ type: 'ok' }]
-                    });
-                } 
-                else if (buttonText.includes('Buy')) {
-                    tg.showPopup({
-                        title: 'Confirm Purchase',
-                        message: 'Are you sure you want to buy additional spins?',
-                        buttons: [
-                            { type: 'ok', text: 'Confirm' },
-                            { type: 'cancel' }
-                        ]
-                    });
-                }
-                else if (buttonText.includes('Withdraw')) {
-                    tg.showPopup({
-                        title: 'Withdrawal',
-                        message: 'Enter the amount you want to withdraw:',
-                        buttons: [{ type: 'ok' }, { type: 'cancel' }]
-                    });
-                }
-                else if (buttonText.includes('Open')) {
-                    tg.showPopup({
-                        title: 'Reward Unlocked!',
-                        message: 'You received 20,000 $WISE tokens!',
-                        buttons: [{ type: 'ok' }]
-                    });
-                }
-            });
-        });
-        
-        // Navigation functionality
-        const navItems = document.querySelectorAll('.nav-item');
-        const pages = document.querySelectorAll('.page');
-        
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const targetPage = this.getAttribute('data-page');
-                
-                // Update active nav item
-                navItems.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Show target page
-                pages.forEach(page => page.classList.remove('active'));
-                document.getElementById(targetPage).classList.add('active');
-                
-                // Scroll to top
-                window.scrollTo(0, 0);
-            });
-        });
-        
-        // Simulate live data updates
-        setInterval(() => {
-            const wiseAmount = document.querySelector('.stat-card:nth-child(1) .stat-value');
-            if (wiseAmount) {
-                const currentAmount = parseInt(wiseAmount.textContent.replace(/,/g, ''));
-                wiseAmount.textContent = (currentAmount + Math.floor(Math.random() * 100)).toLocaleString();
-            }
-            
-            // Animate the roulette wheel
-            const wheel = document.querySelector('.roulette-wheel');
-            if (wheel) {
-                wheel.style.animation = 'none';
-                setTimeout(() => {
-                    wheel.style.animation = 'rotate 30s linear infinite';
-                }, 10);
-            }
-        }, 5000);
-        
-        // Initialize with the current theme
-        if (tg.colorScheme === 'dark') {
-            document.documentElement.style.setProperty('--light', '#f7f7fc');
-            document.documentElement.style.setProperty('--dark', '#1e1e2e');
-            document.documentElement.style.setProperty('--darker', '#161622');
-        } else {
-            document.documentElement.style.setProperty('--light', '#1e1e2e');
-            document.documentElement.style.setProperty('--dark', '#f7f7fc');
-            document.documentElement.style.setProperty('--darker', '#e6e6fa');
-        }
-    </script>
+      <section class="content" itemprop="articleBody">
+        <p>Hi everyone, I’m <strong>KHALID KHAN</strong>, the face behind Elite Trading Channel. I share content around binary trading, crypto markets, and futures trading, and I’m a proud partner of both Binance and Quotex. My goal is to help you understand how these markets work so you can grow your knowledge and trading skills—but before anything else, let’s talk about something extremely important: risk.</p>
+
+        <h2>Trading Comes With Serious Risk</h2>
+        <p>Whether you’re trading crypto futures on Binance, binary options on Quotex, or just exploring market movements, trading is risky. It’s not a guaranteed way to make money. Markets can move fast and unpredictably, and you can lose part—or all—of your investment.</p>
+        <p>This channel is built to educate and guide—but it’s not a promise of profits. If you’re looking for “quick money,” trading is not the answer. It requires discipline, emotional control, and a solid understanding of risk.</p>
+
+        <h2>I Don’t Offer Financial Advice</h2>
+        <p>Everything I post—charts, signals, strategies, trade ideas, or market opinions—is for educational and informational use only. I’m not a financial advisor, and none of my content should be seen as investment advice or a personal recommendation.</p>
+        <p>The decisions you make with your money are entirely up to you. You are fully responsible for any trades you take or losses you may experience. I share what works for me and what I’ve learned, but that doesn’t guarantee similar results for you.</p>
+        <p>As a Binance and Quotex partner, I may earn a commission if you sign up or trade through my referral links. This doesn’t affect what I share here—my content is based on real experience, not marketing. Transparency matters.</p>
+
+        <h2>Final Words</h2>
+        <ul>
+          <li>Don’t invest what you can’t afford to lose.</li>
+          <li>Never trade out of pressure or emotion.</li>
+          <li>Learn first, risk smart, and take full ownership of your journey.</li>
+        </ul>
+
+        <p>By watching this channel, following my content, or using the platforms I promote, you acknowledge that you understand these risks and accept responsibility for your own trading actions.</p>
+
+        <div class="brand" aria-hidden="true">
+          <div class="logo" role="img" aria-label="Elite Trading logo"></div>
+          <div>
+            <div><strong>Elite Trading Channel</strong></div>
+            <div style="color:var(--muted); margin-top:4px">
+              <a href="https://t.me/elitetrading1000" target="_blank" rel="noopener">t.me/elitetrading1000</a> ·
+              <a href="mailto:khalidsafi03069533330@gmail.com">khalidsafi03069533330@gmail.com</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons: replace YOURREF if you have referral codes -->
+        <div class="cta" style="margin-top:18px">
+          <!-- Binance button -->
+          <a class="btn" href="https://www.binance.com/en?ref=YOUR_BINANCE_REF" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3 5 5 3-5 3-3 5-3-5-5-3 5-3 3-5z" fill="currentColor"/></svg>
+            Binance
+          </a>
+
+          <!-- Quotex button -->
+          <a class="btn" href="https://quotex.io/?ref=YOUR_QUOTEX_REF" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Quotex
+          </a>
+
+          <!-- YouTube button (link to your channel or playlist) -->
+          <a class="btn" href="https://www.youtube.com/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8l6 4-6 4V8z" fill="currentColor"/></svg>
+            YouTube
+          </a>
+        </div>
+
+      </section>
+
+      <footer class="footer">
+        <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap">
+          <div style="color:var(--muted)">© <strong>Elite Trading</strong> · <time>2025</time></div>
+          <div style="color:var(--muted)">Made with care • <a href="mailto:khalidsafi03069533330@gmail.com">Contact</a></div>
+        </div>
+      </footer>
+    </article>
+  </main>
 </body>
 </html>
-```
